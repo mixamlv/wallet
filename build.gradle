@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id "org.springdoc.openapi-gradle-plugin" version "1.8.0"
 }
 
 group = 'mm'
@@ -30,8 +31,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation 'io.github.openfeign:feign-jackson'
 	implementation 'org.springframework.modulith:spring-modulith-starter-core'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
@@ -44,6 +47,27 @@ dependencies {
 	testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
 }
 
+sourceSets {
+	intTest {
+		compileClasspath += sourceSets.main.output
+		runtimeClasspath += sourceSets.main.output
+	}
+}
+
+configurations {
+	intTestImplementation.extendsFrom implementation
+	intTestImplementation.extendsFrom testImplementation
+	intTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+dependencies {
+	intTestImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	intTestImplementation 'org.testcontainers:postgresql:1.19.7'
+	intTestImplementation 'com.squareup.okhttp3:okhttp'
+	intTestImplementation 'com.squareup.okhttp3:logging-interceptor'
+	intTestImplementation(project(path: ':api-client' ))
+}
+
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.modulith:spring-modulith-bom:${springModulithVersion}"
@@ -54,3 +78,28 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks {
+	forkedSpringBootRun {
+		doNotTrackState("See https://github.com/springdoc/springdoc-openapi-gradle-plugin/issues/102")
+	}
+}
+
+openApi {
+	outputFileName.set("openapi.yaml")
+	waitTimeInSeconds.set(10)
+}
+
+// Define task to run integration tests
+tasks.register('integrationTest', Test) {
+	description = 'Runs the integration tests.'
+	group = 'verification'
+	testClassesDirs = sourceSets.intTest.output.classesDirs
+	classpath = sourceSets.intTest.runtimeClasspath
+	useJUnitPlatform()
+	testLogging {
+		events 'passed', 'skipped', 'failed'
+	}
+}
+
+

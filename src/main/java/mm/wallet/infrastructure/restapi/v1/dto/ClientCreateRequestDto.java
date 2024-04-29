@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class ClientCreateRequestDto {
-    private String username;
+    private String fullName;
 }

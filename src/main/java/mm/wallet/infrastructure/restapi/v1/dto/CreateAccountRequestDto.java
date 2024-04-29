@@ -1,12 +1,10 @@
 package mm.wallet.infrastructure.restapi.v1.dto;
 
-import lombok.Data;
-
-import java.util.Currency;
 import java.util.UUID;
+import lombok.Data;
 
 @Data
 public class CreateAccountRequestDto {
-    private Currency currency;
+    private String currency;
     private UUID clientId;
 }

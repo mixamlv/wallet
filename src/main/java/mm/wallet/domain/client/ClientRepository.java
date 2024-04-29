@@ -1,4 +1,7 @@
 package mm.wallet.domain.client;
 
-public interface ClientRepository {
+import java.util.UUID;
+import org.springframework.data.repository.ListCrudRepository;
+
+public interface ClientRepository extends ListCrudRepository<Client, UUID> {
 }

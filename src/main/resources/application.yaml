@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: wallet
+  jackson:
+    default-property-inclusion: non_null
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /v3/swagger-ui.html

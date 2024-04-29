@@ -1,10 +1,10 @@
 package mm.wallet.infrastructure.restapi.v1.dto;
 
-import lombok.Data;
-import mm.wallet.domain.account.transaction.Transaction;
-import mm.wallet.domain.account.transaction.TransactionType;
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import lombok.Data;
+import mm.wallet.domain.account.Transaction;
+import mm.wallet.domain.account.transaction.TransactionType;
 
 @Data
 public class TransactionDto {
@@ -15,7 +15,7 @@ public class TransactionDto {
     public static TransactionDto dto(Transaction tx) {
         TransactionDto dto = new TransactionDto();
         dto.setId(tx.id());
-        dto.setAmount(tx.amount());
+        dto.setAmount(tx.amount().setScale(2, RoundingMode.HALF_UP));
         dto.setType(tx.type());
         return dto;
     }

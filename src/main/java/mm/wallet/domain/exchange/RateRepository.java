@@ -1,11 +1,15 @@
 package mm.wallet.domain.exchange;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface RateRepository {
 
-    List<Rate> all();
+    Optional<Rate> find(CurrencyPair pair);
 
-    Optional<Rate> get(CurrencyPair pair);
+    default Rate get(CurrencyPair pair) {
+        return this.find(pair).orElseThrow(() -> new ExchangeRateNotAvailableException(pair));
+    }
+
+    void update(Map<CurrencyPair, Rate> newRates);
 }
