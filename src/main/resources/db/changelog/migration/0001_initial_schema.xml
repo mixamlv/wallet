@@ -13,6 +13,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" nullable="false" primaryKeyName="account_id_pk" />
             </column>
+            <column name="version" type="int(11)" />
             <column name="balance" type="decimal(19, 6)" />
             <column name="currency" type="varchar(10)" />
             <column name="client_id" type="uuid">
